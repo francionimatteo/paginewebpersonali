@@ -1,0 +1,505 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Schede Forza">
+<meta name="theme-color" content="#1f5fbf">
+<title>Schede Forza</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600&family=Barlow+Condensed:wght@500;600;700&display=swap">
+<style>
+:root {
+  --bg: #eef1f4;
+  --surface: #ffffff;
+  --fg: #14202b;
+  --muted: #5a6b7a;
+  --line: #d3dbe2;
+  --accent: #1f5fbf;
+  --accent-fg: #ffffff;
+  --ball: #d9e24a;
+  --ball-fg: #1d2300;
+  --rest: #2f7d5b;
+  --warn: #b4531a;
+  --display: "Barlow Condensed", "Arial Narrow", system-ui, sans-serif;
+  --body: "Barlow", system-ui, -apple-system, sans-serif;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0e1620; --surface: #17222f; --fg: #e8edf2; --muted: #93a4b4; --line: #2a3a4a;
+    --accent: #6aa3f0; --accent-fg: #0b1622; --ball: #d9e24a; --ball-fg: #1d2300; --rest: #5fc59a; --warn: #f0a068;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0e1620; --surface: #17222f; --fg: #e8edf2; --muted: #93a4b4; --line: #2a3a4a;
+  --accent: #6aa3f0; --accent-fg: #0b1622; --ball: #d9e24a; --ball-fg: #1d2300; --rest: #5fc59a; --warn: #f0a068;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--bg); color: var(--fg); font-family: var(--body); font-size: 16px; line-height: 1.45; padding-inline: 16px; padding-block: 18px 40px; -webkit-text-size-adjust: 100%; }
+.wrap { max-width: 540px; margin: 0 auto; display: flex; flex-direction: column; gap: 14px; min-width: 0; }
+h1, h2, h3 { font-family: var(--display); font-weight: 700; margin: 0; text-wrap: balance; line-height: 1.05; }
+h1 { font-size: 2.6rem; letter-spacing: .01em; text-transform: uppercase; }
+h1.small { font-size: 2.1rem; }
+h2 { font-size: 1.9rem; }
+.eyebrow { font-family: var(--display); font-weight: 600; letter-spacing: .12em; text-transform: uppercase; font-size: .9rem; color: var(--muted); }
+.muted { color: var(--muted); }
+button { font: inherit; color: inherit; cursor: pointer; }
+button:focus-visible, input:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+.card { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 14px 16px; }
+.rules { display: flex; flex-direction: column; gap: 6px; font-size: .93rem; line-height: 1.35; }
+.rules div strong { font-family: var(--display); letter-spacing: .06em; text-transform: uppercase; color: var(--accent); font-size: 1rem; margin-right: 4px; }
+.pick { display: flex; flex-direction: column; gap: 2px; text-align: left; width: 100%; background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 12px 16px; }
+.pick:active { border-color: var(--accent); }
+.pick .t { font-family: var(--display); font-size: 1.7rem; font-weight: 700; text-transform: uppercase; line-height: 1.1; }
+.row { display: flex; gap: 12px; align-items: center; justify-content: space-between; }
+.back { background: none; border: 0; padding: 8px 0; color: var(--accent); font-weight: 600; text-align: left; align-self: flex-start; }
+.blk { display: flex; align-items: center; gap: 14px; width: 100%; text-align: left; background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 14px 16px; }
+.blk .n { font-family: var(--display); font-size: 1.5rem; font-weight: 700; width: 2rem; text-align: center; color: var(--accent); }
+.blk .b { flex: 1; min-width: 0; }
+.blk .b strong { font-family: var(--display); font-size: 1.3rem; font-weight: 700; display: block; }
+.blk.done { opacity: .6; }
+.blk.done .n { color: var(--rest); }
+.btn { display: block; width: 100%; border: 0; border-radius: 10px; padding: 16px; font-family: var(--display); font-weight: 700; font-size: 1.5rem; letter-spacing: .04em; text-transform: uppercase; background: var(--accent); color: var(--accent-fg); }
+.btn.ball { background: var(--ball); color: var(--ball-fg); }
+.btn.ghost { background: transparent; color: var(--fg); border: 1px solid var(--line); font-size: 1.1rem; padding: 12px; }
+.btns { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; }
+.list { display: flex; flex-direction: column; gap: 0; margin: 0; padding: 0; list-style: none; }
+.list li { padding: 10px 0; border-top: 1px solid var(--line); display: flex; gap: 10px; justify-content: space-between; }
+.list li:first-child { border-top: 0; }
+.list .p { color: var(--muted); text-align: right; flex-shrink: 0; max-width: 45%; }
+.bar { height: 6px; background: var(--line); border-radius: 3px; overflow: hidden; }
+.bar > i { display: block; height: 100%; background: var(--accent); transition: width .3s; }
+.ctx { font-family: var(--display); font-weight: 600; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); font-size: 1rem; }
+.gearrow { display: flex; flex-direction: column; gap: 2px; padding: 6px 0 0; font-size: 1.02rem; }
+.gearrow strong { font-family: var(--display); font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--accent); }
+.note { border-left: 4px solid var(--warn); padding: 8px 12px; background: var(--surface); border-radius: 0 10px 10px 0; font-size: .95rem; }
+.audiowarn { width: 100%; border: 2px solid var(--warn); background: var(--surface); color: var(--warn); border-radius: 10px; padding: 12px; font-weight: 600; font-size: 1.05rem; }
+.exname { font-family: var(--display); font-weight: 700; font-size: 2.6rem; line-height: 1.02; text-wrap: balance; }
+.exen { color: var(--muted); font-size: .95rem; }
+.exdesc { font-size: 1.5rem; line-height: 1.4; }
+.presc { font-family: var(--display); font-weight: 700; font-size: 1.7rem; color: var(--accent); }
+.clock { font-family: var(--display); font-weight: 700; font-size: 6.5rem; line-height: 1; font-variant-numeric: tabular-nums; text-align: center; padding: 8px 0; }
+.clock.work { color: var(--fg); }
+.clock.rest { color: var(--rest); }
+.badge { display: inline-block; font-family: var(--display); font-weight: 700; letter-spacing: .1em; text-transform: uppercase; padding: 4px 12px; border-radius: 6px; font-size: 1.1rem; }
+.badge.work { background: var(--ball); color: var(--ball-fg); }
+.badge.rest { background: var(--rest); color: var(--bg); }
+.next { border-top: 1px dashed var(--line); padding-top: 12px; }
+.tools { display: flex; justify-content: flex-end; }
+.tools button { background: none; border: 1px solid var(--line); border-radius: 8px; padding: 4px 10px; font-size: .85rem; color: var(--muted); }
+.num { width: 5.5rem; font-family: var(--display); font-weight: 700; font-size: 2rem; text-align: center; padding: 4px 8px; border: 1px solid var(--line); border-radius: 8px; background: var(--bg); color: var(--fg); }
+@media (prefers-reduced-motion: reduce) { .bar > i { transition: none; } }
+</style>
+</head>
+<body>
+<div class="wrap" id="app"></div>
+
+<script>
+/* ---------- dati ---------- */
+function E(it, en, d, p, o) { return Object.assign({ it: it, en: en, d: d, p: p }, o || {}); }
+
+var WARM = [
+  E(`Respirazione diaframmatica`, `Diaphragmatic breathing`, `Supino, ginocchia piegate e piedi a terra. Una mano sull'addome. Inspira dal naso gonfiando l'addome in 4 secondi, espira lenta dalla bocca in 6. Collo morbido.`, `60"`, { secs: 60 }),
+  E(`Gatto e mucca`, `Cat cow`, `In quadrupedia alterni l'arco e l'inarcamento della colonna seguendo il respiro. Collo in linea con la schiena, ampiezza comoda.`, `10 ripetizioni`),
+  E(`Camminata dell'elefante`, `Elephant Walks`, `Piegato in avanti con le mani verso terra, cammini alternando la flessione delle ginocchia per allungare i posteriori. Collo rilassato.`, `8 ripetizioni`),
+  E(`Squat a corpo libero`, `Bodyweight squat`, `Piedi larghi quanto le spalle, scendi con i talloni a terra e la schiena lunga, sguardo davanti a te, poi risali.`, `10 ripetizioni`),
+  E(`Apertura del libro`, `Open book`, `Sdraiato su un fianco, ginocchia piegate, braccia distese avanti. Apri il braccio superiore ad arco solo fin dove è comodo per collo e spalla, poi torna.`, `5 per lato`),
+  E(`90/90 con rotazioni d'anca`, `90/90 hip switch`, `Seduto con le gambe piegate a 90 gradi. Passi da un lato all'altro ruotando le anche, con il busto alto.`, `8 ripetizioni`),
+  E(`Mobilizzazione dolce della spalla destra`, `Gentle shoulder pendulum`, `In piedi, busto leggermente inclinato in avanti appoggiandoti con la mano sinistra a una panca. Il braccio destro pende e disegna piccoli cerchi e pendoli, in modo rilassato. Nessuno sforzo.`, `30"`, { secs: 30 }),
+  E(`Sulle punte e atterraggio sui talloni`, `Heel drops`, `In piedi sali sulle punte e lascia cadere i talloni a terra in modo morbido, ginocchia leggermente flesse. Piccolo impatto controllato per gli stimoli alle ossa.`, `20 ripetizioni`)
+];
+
+var CLOSE = [
+  E(`Piegamento a pancake`, `Pancake fold`, `Seduto a gambe divaricate, ti pieghi in avanti partendo dalle anche con la schiena lunga, mani avanti sul tappetino. Sguardo a terra, collo rilassato.`, `45"`, { secs: 45 }),
+  E(`Flessori d'anca in ginocchio`, `Half-kneeling hip flexor stretch`, `In affondo con il ginocchio posteriore a terra (cuscino sotto il ginocchio). Contrai il gluteo e spingi il bacino in avanti senza inarcare la schiena.`, `40" per lato`, { secs: 40, sides: true }),
+  E(`Posizione del bambino con apertura laterale`, `Child's pose side reach`, `Seduto sui talloni, braccia distese avanti. Porti entrambe le mani verso un lato per allungare fianco e schiena, poi cambi. Con il braccio destro resta comodo, senza tirare.`, `30" per lato`, { secs: 30, sides: true }),
+  E(`Respirazione lenta`, `Slow breathing`, `Supino, mani sull'addome. Inspira in 4 secondi, espira in 6. Lascia andare spalle, collo e braccio destro, magari appoggiato su un cuscino a livello del cuore.`, `60"`, { secs: 60 })
+];
+
+var CARDIO_EX = E(`Cardio leggero`, `Easy cardio`, `Camminata veloce, cyclette o ellittica a ritmo facile: riesci a parlare a frasi intere (circa 5-6 su 10 di sforzo). Sulla cyclette o sull'ellittica non stringere forte le maniglie con la mano destra e non spingere con il braccio. Fermati se compaiono pesantezza, gonfiore o dolore al braccio destro o tensione al collo.`, ``);
+
+var CARDIO_NOTE = `Ritmo facile, si parla a frasi intere. Scegli camminata veloce, cyclette o ellittica. Il tempo suggerito serve a completare circa 1 ora in totale.`;
+
+var SESSIONS = [
+  {
+    name: `Seduta 1`, focus: `Gambe e spinta leggera`,
+    gearRows: [[`Attrezzi`, [`Manubri (leggeri e medi)`, `Panca`, `Gradone alto`, `Tappetino`]], [`Cardio`, [`Scarpe da camminata, cyclette o ellittica`]]],
+    blocks: [
+      { name: `Riscaldamento`, kind: `warm`, ex: WARM, note: `Circa 8 minuti. Ampiezze comode per collo e spalla destra.` },
+      { name: `Forza · Gambe e spinta`, kind: `single`, sets: 3, rest: 60, note: `Prima gli esercizi per gambe e anche, che danno lo stimolo più forte per le ossa. Lascia 2-3 ripetizioni di margine. Con il braccio destro: carico basso e recuperi lunghi.`, ex: [
+        E(`Goblet squat`, `Goblet Squat`, `Un manubrio al petto sostenuto dal braccio sinistro, il destro solo di appoggio. Talloni a terra, schiena neutra, sguardo davanti. Scendi controllato e risali spingendo sui talloni.`, `8 ripetizioni`, { sets: 4, rest: 90 }),
+        E(`Salita sul gradone con manubri`, `Step-up with Dumbbells`, `Gradone alto, un piede alla volta. Manubri lungo i fianchi (più leggero a destra, presa non stretta). Sali spingendo con la gamba sul gradone, scendi lento.`, `8 per gamba`, { sets: 3, rest: 75 }),
+        E(`Spinta con manubri su panca piana`, `Dumbbell Bench Press`, `Panca piana, piedi a terra, testa appoggiata. Scendi controllando fino a gomiti all'altezza del busto, non oltre, poi spingi. Manubrio destro più leggero.`, `10 ripetizioni`, { sets: 3, rest: 90 }),
+        E(`Spinta d'anca sulla panca`, `Hip Thrust`, `Schiena appoggiata alla panca a livello delle scapole, manubrio sulle anche (tenuto con la mano sinistra e la destra di appoggio). Sguardo davanti, collo neutro. Spingi il bacino in alto contraendo i glutei.`, `10 ripetizioni`, { sets: 3, rest: 75 }),
+        E(`Piegamenti sul rialzo`, `Incline Push-up`, `Mani sul bordo di una panca o sul muro, mani larghe come riesci, corpo in linea. Scendi con i gomiti a circa 45 gradi, collo neutro, sguardo alla panca. Non forzare il braccio destro.`, `8-10 ripetizioni`, { sets: 3, rest: 90 }),
+        E(`Plank sugli avambracci`, `Low Plank Hold`, `Gomiti sotto le spalle, corpo in linea, glutei contratti, sguardo a terra e collo lungo. Se il braccio destro si gonfia o pesa, passa al plank sulle mani su un rialzo.`, `30"`, { sets: 3, rest: 45, secs: 30 }),
+        E(`Atterraggi dal gradino basso`, `Step-down Landings`, `Scendi da un gradino basso (10-15 cm) e atterra su entrambi i piedi, morbido sui talloni, ginocchia leggermente flesse. Fallo solo se i controlli ossei (DXA) lo consentono.`, `6 ripetizioni`, { sets: 3, rest: 45 })
+      ] },
+      { name: `Cardio leggero`, kind: `cardio`, ex: CARDIO_EX, note: CARDIO_NOTE },
+      { name: `Chiusura · Stretching`, kind: `mob`, ex: CLOSE, note: `Circa 7 minuti. Tensione tollerabile, mai dolore. Respira lento.` }
+    ]
+  },
+  {
+    name: `Seduta 2`, focus: `Catena posteriore e trazione`,
+    gearRows: [[`Attrezzi`, [`Manubri (medi e leggeri)`, `Panca`, `Elastico`, `Fitball (o panno per scivolare)`, `Tappetino`]], [`Cardio`, [`Scarpe da camminata, cyclette o ellittica`]]],
+    blocks: [
+      { name: `Riscaldamento`, kind: `warm`, ex: WARM, note: `Circa 8 minuti. Ampiezze comode per collo e spalla destra.` },
+      { name: `Forza · Catena posteriore`, kind: `single`, sets: 3, rest: 60, note: `Schiena sempre neutra, collo allineato alla colonna. Il braccio destro lavora leggero, mai oltre 2-3 kg all'inizio.`, ex: [
+        E(`Stacco rumeno con manubri`, `Romanian Dead Lift`, `Manubri medi davanti alle cosce, anche indietro, schiena neutra, collo allineato (sguardo a terra a un paio di metri). Scendi fino a metà tibia e risali spingendo i fianchi in avanti. Se serve, parti con i manubri appoggiati su un rialzo.`, `8 ripetizioni`, { sets: 4, rest: 90 }),
+        E(`Rematore a un braccio con appoggio sulla panca`, `One-arm Dumbbell Row`, `Mano e ginocchio dello stesso lato sulla panca, schiena piatta, sguardo a terra. Tira il manubrio verso l'anca con il gomito vicino al corpo e scendi lento. Destro: 2-3 kg al massimo all'inizio.`, `10 per lato`, { sets: 3, rest: 75 }),
+        E(`Affondo indietro con manubri`, `Reverse Lunge`, `Manubri leggeri lungo i fianchi. Fai un passo indietro e scendi con il ginocchio posteriore verso terra, poi spingi con la gamba davanti per tornare su. Tronco eretto.`, `8 per gamba`, { sets: 3, rest: 60 }),
+        E(`Rematore con elastico`, `Band Row`, `Seduto o in piedi, elastico fissato davanti a te, presa morbida. Tira i gomiti indietro avvicinando le scapole. Movimento corto, senza spingere il mento in avanti.`, `12 ripetizioni`, { sets: 3, rest: 60 }),
+        E(`Curl dei femorali con fitball`, `Stability Ball Leg Curl`, `Supino, talloni sulla fitball, bacino alto. Fai rotolare la palla verso i glutei piegando le ginocchia, poi torna. In alternativa fai scivolare i talloni su un panno a terra.`, `8-10 ripetizioni`, { sets: 3, rest: 60 }),
+        E(`Ponte glutei a terra`, `Glute Bridge`, `Supino, ginocchia piegate, piedi a terra. Spingi sui talloni sollevando il bacino e contraendo i glutei. Collo rilassato.`, `12 ripetizioni`, { sets: 2, rest: 45 }),
+        E(`Bird dog`, `Bird Dog`, `In quadrupedia, estendi un braccio e la gamba opposta senza ruotare il bacino. Sguardo a terra. Se il braccio destro non tollera, alterna solo le gambe.`, `8 per lato`, { sets: 2, rest: 45 }),
+        E(`Camminata con la valigetta`, `Suitcase Carry`, `In piedi con un manubrio pesante nella mano sinistra, cammini dritto senza inclinarti. Per il lato destro usa un peso molto leggero, oppure ometti. Sul "lato destro" il peso è a destra.`, `30" per lato`, { sets: 2, rest: 60, secs: 30, sides: true })
+      ] },
+      { name: `Cardio leggero`, kind: `cardio`, ex: CARDIO_EX, note: CARDIO_NOTE },
+      { name: `Chiusura · Stretching`, kind: `mob`, ex: CLOSE, note: `Circa 7 minuti. Tensione tollerabile, mai dolore. Respira lento.` }
+    ]
+  },
+  {
+    name: `Seduta 3`, focus: `Total body unilaterale, anche ed equilibrio`,
+    gearRows: [[`Attrezzi`, [`Manubri leggeri`, `Panca inclinabile`, `Gradone`, `Elastici (morbido e medio)`, `Sedia o panca per appoggio`, `Tappetino`]], [`Cardio`, [`Scarpe da camminata, cyclette o ellittica`]]],
+    blocks: [
+      { name: `Riscaldamento`, kind: `warm`, ex: WARM, note: `Circa 8 minuti. Ampiezze comode per collo e spalla destra.` },
+      { name: `Forza · Total body`, kind: `single`, sets: 3, rest: 60, note: `Esercizi su un arto alla volta per forza ed equilibrio. Per il braccio destro: carichi molto leggeri, elastico morbido, nessuna forzatura.`, ex: [
+        E(`Affondo statico con piede anteriore rialzato`, `Front-Foot-Elevated Split Squat`, `Piede anteriore su un gradone basso, manubri leggeri ai lati. Scendi in verticale con il ginocchio posteriore verso terra e risali spingendo con la gamba davanti.`, `8 per gamba`, { sets: 3, rest: 75 }),
+        E(`Squat su una gamba con appoggio`, `Supported Single Leg Squat`, `Tieniti a una sedia o alla panca con la mano sinistra. Scendi su una gamba tenendo l'altra avanti e risali. Se perdi la tecnica, aumenta l'appoggio.`, `6 per gamba`, { sets: 3, rest: 75 }),
+        E(`Spinta su panca inclinata bassa`, `Low Incline Dumbbell Press`, `Panca a 30 gradi, testa appoggiata. Spingi i manubri leggeri verso l'alto, poi scendi controllando. Fai l'esercizio solo se il collo non tira. Manubrio destro più leggero.`, `10 ripetizioni`, { sets: 3, rest: 75 }),
+        E(`Alzate laterali`, `Dumbbell Lateral Raise`, `In piedi, manubri leggeri ai fianchi. Alza le braccia di lato solo fino sotto l'altezza delle spalle, gomiti morbidi, collo rilassato (niente scrollata di spalle). Destro ancora più leggero.`, `12 ripetizioni`, { sets: 3, rest: 60 }),
+        E(`Estensione dei tricipiti con elastico`, `Band Triceps Pushdown`, `Elastico fissato in alto, gomiti vicini ai fianchi. Estendi i gomiti verso il basso e torna lento. Per il braccio destro usa un elastico morbido, presa non stretta.`, `12 ripetizioni`, { sets: 3, rest: 60 }),
+        E(`Adduzioni e abduzioni d'anca con elastico`, `Band Hip Adduction/Abduction`, `Elastico alla caviglia, ti tieni a un appoggio. Porti la gamba di lato e poi verso l'interno in modo controllato, senza inclinare il busto.`, `15 per lato`, { sets: 2, rest: 45 }),
+        E(`Passi laterali con elastico alle caviglie`, `Banded Lateral Walk`, `Elastico alle caviglie, ginocchia leggermente flesse. Fai passi laterali mantenendo la tensione dell'elastico, piedi paralleli.`, `10 passi per lato`, { sets: 3, rest: 45 }),
+        E(`Plank laterale sul ginocchio`, `Kneeling Side Plank`, `Appoggio sul ginocchio e sull'avambraccio (o sulla mano, gomito disteso, se il destro non tollera). Bacino in linea con il busto, collo neutro.`, `25" per lato`, { sets: 2, rest: 45, secs: 25, sides: true })
+      ] },
+      { name: `Cardio leggero`, kind: `cardio`, ex: CARDIO_EX, note: CARDIO_NOTE },
+      { name: `Chiusura · Stretching`, kind: `mob`, ex: CLOSE, note: `Circa 7 minuti. Tensione tollerabile, mai dolore. Respira lento.` }
+    ]
+  }
+];
+
+/* ---------- costruzione dei passi ---------- */
+function stepsFor(b) {
+  var s = [];
+  var i, k;
+  if (b.kind === 'warm') {
+    for (i = 0; i < b.ex.length; i++) {
+      var x = b.ex[i];
+      var wc = `Esercizio ` + (i + 1) + ` di ` + b.ex.length;
+      if (x.secs) { s.push({ t: 'ready', secs: 3, label: `Pronti`, ctx: wc }); s.push({ t: 'work', secs: x.secs, ex: x, ctx: wc }); }
+      else s.push({ t: 'manual', ex: x, ctx: wc });
+    }
+  } else if (b.kind === 'mob') {
+    s.push({ t: 'ready', secs: 5, label: `Pronti` });
+    for (i = 0; i < b.ex.length; i++) {
+      var m = b.ex[i], mc = `Esercizio ` + (i + 1) + ` di ` + b.ex.length;
+      if (m.secs) {
+        if (m.sides) {
+          s.push({ t: 'work', secs: m.secs, ex: m, ctx: mc, side: `lato destro` });
+          s.push({ t: 'rest', secs: 5, label: `Cambia lato`, ctx: mc });
+          s.push({ t: 'work', secs: m.secs, ex: m, ctx: mc, side: `lato sinistro` });
+        } else s.push({ t: 'work', secs: m.secs, ex: m, ctx: mc });
+      } else s.push({ t: 'manual', ex: m, ctx: mc });
+      if (i < b.ex.length - 1) s.push({ t: 'rest', secs: 8, label: `Cambio posizione`, ctx: mc });
+    }
+  } else if (b.kind === 'single') {
+    for (i = 0; i < b.ex.length; i++) {
+      var e = b.ex[i], n = e.sets || b.sets || 3;
+      for (k = 1; k <= n; k++) {
+        var cs = `Esercizio ` + (i + 1) + ` di ` + b.ex.length + ` · serie ` + k + ` di ` + n;
+        if (e.secs) {
+          if (e.sides) {
+            s.push({ t: 'work', secs: e.secs, ex: e, ctx: cs, side: `lato destro` });
+            s.push({ t: 'rest', secs: 5, label: `Cambia lato`, ctx: cs });
+            s.push({ t: 'work', secs: e.secs, ex: e, ctx: cs, side: `lato sinistro` });
+          } else s.push({ t: 'work', secs: e.secs, ex: e, ctx: cs });
+        } else s.push({ t: 'manual', ex: e, ctx: cs });
+        if (!(i === b.ex.length - 1 && k === n)) s.push({ t: 'rest', secs: e.rest || b.rest || 60, label: `Recupero`, ctx: cs });
+      }
+    }
+  } else if (b.kind === 'cardio') {
+    var mins = st.cardioMin || 10;
+    s.push({ t: 'ready', secs: 10, label: `Pronti` });
+    s.push({ t: 'work', secs: mins * 60, ex: b.ex, ctx: mins + ` minuti`, label: `Cardio leggero` });
+  }
+  return s;
+}
+
+/* durata stimata (secondi) di un blocco, cardio escluso */
+function estSecs(b) {
+  if (b.kind === 'cardio') return 0;
+  var t = 0;
+  stepsFor(b).forEach(function (x) {
+    if (x.secs) t += x.secs;
+    else if (b.kind === 'warm') t += 40;
+    else t += /per (gamba|lato)/.test(x.ex.p || '') ? 70 : 40;
+  });
+  return t;
+}
+function baseMins(S) {
+  var t = 0;
+  S.blocks.forEach(function (b) { t += estSecs(b); });
+  return Math.round(t / 60);
+}
+function suggestCardio(S) {
+  var m = Math.round((60 - baseMins(S)) / 5) * 5;
+  return Math.max(5, Math.min(20, m));
+}
+
+/* ---------- stato ---------- */
+var app = document.getElementById('app');
+var st = { view: 'home', si: null, bi: null, steps: [], i: 0, running: false, endAt: 0, remMs: 0, done: {}, finished: false, cardioMin: 0 };
+var timerId = null, audio = null, lastBeep = -1, wake = null;
+
+function getAudio() {
+  try {
+    var AC = window.AudioContext || window.webkitAudioContext;
+    if (!AC) return null;
+    if (!audio || audio.state === 'closed') {
+      audio = new AC();
+      audio.onstatechange = audioUI;
+    }
+    return audio;
+  } catch (err) { return null; }
+}
+function beep(f, ms) {
+  var a = getAudio();
+  if (!a) return;
+  var t0 = Date.now();
+  var go = function () {
+    if (Date.now() - t0 > 600) return;
+    try {
+      var o = a.createOscillator(), g = a.createGain();
+      o.frequency.value = f; g.gain.value = 0.18;
+      o.connect(g); g.connect(a.destination);
+      o.start(); o.stop(a.currentTime + ms / 1000);
+    } catch (err) {}
+  };
+  if (a.state === 'running') { go(); return; }
+  try {
+    var p = a.resume();
+    if (p && p.then) p.then(function () { go(); audioUI(); }, audioUI); else go();
+  } catch (err) { audioUI(); }
+}
+function wakeAudio() {
+  var a = getAudio();
+  if (a && a.state !== 'running') { try { var p = a.resume(); if (p && p.then) p.then(audioUI, audioUI); } catch (err) {} }
+}
+function audioUI() {
+  var w = document.getElementById('audiowarn');
+  if (!w) return;
+  w.hidden = !(st.view === 'player' && audio && audio.state !== 'running');
+}
+function fmt(sec) {
+  var m = Math.floor(sec / 60), s = sec % 60;
+  return m + `:` + (s < 10 ? `0` : ``) + s;
+}
+function esc(t) { return String(t).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); }
+function cur() { return SESSIONS[st.si].blocks[st.bi]; }
+
+/* ---------- viste ---------- */
+function home() {
+  st.view = 'home';
+  var h = `<div><div class="eyebrow">Mantenimento · forza</div><h1 class="small">Scegli la seduta</h1></div>`;
+  h += `<div class="card rules">` +
+    `<div><strong>Ossa</strong>carico maggiore su gambe e anche, 6-10 ripetizioni con 2-3 di margine. Niente torsioni o flessioni del tronco sotto carico se la densità vertebrale è ridotta.</div>` +
+    `<div><strong>Braccio dx</strong>bracciale se prescritto. Parti con 1-2 kg, sali del 5-10% ogni 2 settimane solo se nelle 24-48 h non ci sono gonfiore, pesantezza o dolore. Serie corte, recuperi lunghi.</div>` +
+    `<div><strong>Collo</strong>sempre neutro. Niente carichi sopra la testa, bilanciere sulle spalle, scrollate, ponti o posizioni a testa in giù.</div>` +
+    `</div>`;
+  for (var i = 0; i < SESSIONS.length; i++) {
+    var d = 0, bl = SESSIONS[i].blocks;
+    for (var j = 0; j < bl.length; j++) if (st.done[i + '-' + j]) d++;
+    h += `<button class="pick" data-a="sess" data-i="` + i + `"><span class="t">` + SESSIONS[i].name + ` · ` + esc(SESSIONS[i].focus) + `</span><span class="muted">` + d + ` di ` + bl.length + ` blocchi fatti · circa 1 ora</span></button>`;
+  }
+  h += `<div class="tools"><button data-a="theme">Cambia tema</button></div>`;
+  app.innerHTML = h;
+}
+
+function session(i) {
+  st.view = 'session'; st.si = i;
+  var S = SESSIONS[i];
+  var sug = suggestCardio(S), base = baseMins(S);
+  var h = `<button class="back" data-a="home">‹ Schede</button><div><div class="eyebrow">` + esc(S.focus) + `</div><h1>` + S.name + `</h1></div>`;
+  h += `<div class="note"><strong>Promemoria:</strong> collo neutro · braccio destro leggero · fermati se compaiono gonfiore, pesantezza o dolore.</div>`;
+  h += `<div class="card"><div class="eyebrow">Durata</div><div>Senza cardio circa ` + base + ` minuti. Cardio suggerito: <strong>` + sug + ` minuti</strong>, per arrivare a circa 1 ora.</div>`;
+  S.gearRows.forEach(function (r) { h += `<div class="gearrow"><strong>` + r[0] + `</strong><span>` + esc(r[1].join(`, `)) + `</span></div>`; });
+  h += `</div>`;
+  for (var j = 0; j < S.blocks.length; j++) {
+    var b = S.blocks[j];
+    var sub = b.kind === 'cardio' ? `Cronometro · suggeriti ` + sug + ` minuti` : b.ex.length + ` esercizi · circa ` + Math.round(estSecs(b) / 60) + ` min`;
+    h += `<button class="blk ` + (st.done[i + '-' + j] ? 'done' : '') + `" data-a="block" data-j="` + j + `"><span class="n">` + (st.done[i + '-' + j] ? '✓' : (j + 1)) + `</span><span class="b"><strong>` + esc(b.name) + `</strong><span class="muted">` + sub + `</span></span><span class="muted">›</span></button>`;
+  }
+  app.innerHTML = h;
+}
+
+function intro(j) {
+  st.view = 'intro'; st.bi = j; st.finished = false;
+  var S = SESSIONS[st.si], b = cur();
+  var h = `<button class="back" data-a="sess" data-i="` + st.si + `">‹ ` + S.name + `</button><div><div class="eyebrow">Blocco ` + (j + 1) + ` di ` + S.blocks.length + `</div><h2>` + esc(b.name) + `</h2></div><p class="muted" style="margin:0">` + esc(b.note) + `</p>`;
+  if (b.kind === 'cardio') {
+    var sug = suggestCardio(S), val = st.cardioMin || sug;
+    h += `<div class="card"><div class="eyebrow">Minuti di cardio</div><div class="row"><input class="num" id="cmin" type="number" inputmode="numeric" min="3" max="40" value="` + val + `"><span class="muted">Suggeriti: ` + sug + ` minuti per arrivare a circa 1 ora.</span></div></div>`;
+    h += `<div class="card"><div class="exdesc" style="font-size:1.1rem">` + esc(b.ex.d) + `</div></div>`;
+  } else {
+    h += `<div class="card"><ul class="list">`;
+    b.ex.forEach(function (x) {
+      var p = x.p;
+      if (b.kind === 'single' && (x.sets || b.sets)) p = (x.sets || b.sets) + ` serie · ` + p;
+      h += `<li><span>` + esc(x.it) + `</span><span class="p">` + esc(p) + `</span></li>`;
+    });
+    h += `</ul></div>`;
+  }
+  h += `<button class="btn ball" data-a="start">Avvia blocco</button>`;
+  app.innerHTML = h;
+}
+
+function nextEx(from) {
+  for (var k = from + 1; k < st.steps.length; k++) {
+    var s = st.steps[k];
+    if (s.ex && (s.t === 'work' || s.t === 'manual')) return s;
+  }
+  return null;
+}
+
+function player() {
+  st.view = 'player';
+  var s = st.steps[st.i], pct = Math.round(st.i / st.steps.length * 100);
+  var h = `<button class="audiowarn" id="audiowarn" data-a="audio" hidden>Audio sospeso dopo un'interruzione. Tocca qui per riattivare i beep.</button><div class="row"><button class="back" data-a="quit">‹ Esci dal blocco</button><span class="ctx">` + esc(cur().name) + `</span></div><div class="bar"><i style="width:` + pct + `%"></i></div><div class="ctx">` + esc(s.ctx || '') + `</div>`;
+  if (s.t === 'ready' || s.t === 'rest') {
+    var nx = nextEx(st.i);
+    h += `<div><span class="badge rest">` + esc(s.label || 'Recupero') + `</span></div><div class="clock rest" id="clock">` + fmt(s.secs) + `</div>`;
+    if (nx) h += `<div class="next"><div class="ctx">Prossimo</div><div class="exname" style="font-size:2.1rem">` + esc(nx.ex.it) + (nx.side ? ` · ` + nx.side : ``) + `</div><div class="exen">` + esc(nx.ex.en) + (nx.ex.p ? ` · ` + esc(nx.ex.p) : ``) + `</div></div>`;
+    h += `<div class="btns"><button class="btn ghost" data-a="prev">‹ Indietro</button><button class="btn ghost" data-a="pause" id="pausebtn">Pausa</button><button class="btn ghost" data-a="skip">Salta ›</button></div>`;
+  } else if (s.t === 'work') {
+    h += `<div><span class="badge work">` + esc(s.label || 'Lavoro') + `</span></div><div class="clock work" id="clock">` + fmt(s.secs) + `</div>`;
+    h += exCard(s);
+    h += `<div class="btns"><button class="btn ghost" data-a="prev">‹ Indietro</button><button class="btn ghost" data-a="pause" id="pausebtn">Pausa</button><button class="btn ghost" data-a="skip">Salta ›</button></div>`;
+  } else {
+    h += exCard(s);
+    h += `<button class="btn ball" data-a="skip">Fatto</button><button class="btn ghost" data-a="prev">‹ Indietro</button>`;
+  }
+  app.innerHTML = h;
+  audioUI();
+}
+
+function exCard(s) {
+  var x = s.ex;
+  var h = `<div class="card" style="display:flex;flex-direction:column;gap:8px"><div class="exname">` + esc(x.it) + (s.side ? ` · ` + esc(s.side) : ``) + `</div>`;
+  if (x.en !== x.it) h += `<div class="exen">` + esc(x.en) + `</div>`;
+  if (x.p) h += `<div class="presc">` + esc(x.p) + `</div>`;
+  h += `<div class="exdesc">` + esc(x.d) + `</div></div>`;
+  return h;
+}
+
+function finish() {
+  st.view = 'finish'; st.finished = true; stopTimer();
+  st.done[st.si + '-' + st.bi] = true;
+  beep(660, 200); setTimeout(function () { beep(880, 200); }, 240); setTimeout(function () { beep(1100, 450); }, 480);
+  var S = SESSIONS[st.si], nb = st.bi + 1;
+  var h = `<div><div class="eyebrow">` + esc(cur().name) + `</div><h2>Blocco completato</h2></div>`;
+  if (nb < S.blocks.length) {
+    h += `<p class="muted" style="margin:0">Quando sei pronta, avvia il blocco successivo.</p><button class="btn ball" data-a="block" data-j="` + nb + `">Prossimo: ` + esc(S.blocks[nb].name) + `</button><button class="btn ghost" data-a="sess" data-i="` + st.si + `">Elenco blocchi</button>`;
+  } else {
+    h += `<p class="muted" style="margin:0">` + S.name + ` completata.</p><button class="btn" data-a="home">Torna alle schede</button>`;
+  }
+  app.innerHTML = h;
+  releaseWake();
+}
+
+/* ---------- timer ---------- */
+function stopTimer() { if (timerId) { clearInterval(timerId); timerId = null; } st.running = false; }
+function beginStep() {
+  stopTimer(); lastBeep = -1;
+  var s = st.steps[st.i];
+  player();
+  if (s.secs) {
+    st.endAt = Date.now() + s.secs * 1000; st.running = true;
+    timerId = setInterval(tick, 200);
+  }
+}
+function tick() {
+  if (!st.running) return;
+  var s = st.steps[st.i];
+  var rem = Math.ceil((st.endAt - Date.now()) / 1000);
+  var c = document.getElementById('clock');
+  if (rem <= 0) { advance(); return; }
+  if (c) c.textContent = fmt(rem);
+  audioUI();
+  if (rem <= 3 && rem !== lastBeep) {
+    lastBeep = rem;
+    if (s.t === 'rest' || s.t === 'ready') beep(1000, 130); else beep(600, 130);
+  }
+}
+function boundaryBeep(ns) {
+  if (!ns) return;
+  if (ns.t === 'work') { beep(1320, 600); }
+  else if (ns.t === 'rest') { beep(500, 220); setTimeout(function () { beep(350, 380); }, 260); }
+  else if (ns.t === 'manual') { beep(784, 150); setTimeout(function () { beep(1047, 260); }, 190); }
+  else { beep(880, 350); }
+}
+function advance() { boundaryBeep(st.steps[st.i + 1]); next(); }
+function next() {
+  if (st.i + 1 >= st.steps.length) { finish(); return; }
+  st.i++; beginStep();
+}
+function prev() { if (st.i > 0) { beep(440, 140); st.i--; beginStep(); } }
+function pause() {
+  var btn = document.getElementById('pausebtn');
+  if (st.running) { st.remMs = st.endAt - Date.now(); stopTimer(); if (btn) btn.textContent = 'Riprendi'; }
+  else { st.endAt = Date.now() + st.remMs; st.running = true; timerId = setInterval(tick, 200); if (btn) btn.textContent = 'Pausa'; }
+}
+function requestWake() {
+  try { if (navigator.wakeLock) navigator.wakeLock.request('screen').then(function (w) { wake = w; }, function () {}); } catch (err) {}
+}
+function releaseWake() { try { if (wake) { wake.release(); wake = null; } } catch (err) {} }
+
+function startBlock() {
+  wakeAudio();
+  requestWake();
+  var b = cur();
+  if (b.kind === 'cardio') {
+    var inp = document.getElementById('cmin');
+    var v = inp ? parseInt(inp.value, 10) : NaN;
+    if (!(v >= 3)) v = suggestCardio(SESSIONS[st.si]);
+    st.cardioMin = Math.min(v, 40);
+  }
+  st.steps = stepsFor(b); st.i = 0;
+  beep(660, 150);
+  beginStep();
+}
+
+/* ---------- eventi ---------- */
+app.addEventListener('click', function (ev) {
+  var t = ev.target.closest('[data-a]');
+  if (!t) return;
+  var a = t.getAttribute('data-a');
+  if (a === 'home') { stopTimer(); releaseWake(); home(); }
+  else if (a === 'sess') { stopTimer(); releaseWake(); session(t.hasAttribute('data-i') ? +t.getAttribute('data-i') : st.si); }
+  else if (a === 'block') { intro(+t.getAttribute('data-j')); }
+  else if (a === 'start') { startBlock(); }
+  else if (a === 'skip') { advance(); }
+  else if (a === 'audio') { wakeAudio(); beep(880, 200); }
+  else if (a === 'prev') { prev(); }
+  else if (a === 'pause') { pause(); }
+  else if (a === 'quit') { stopTimer(); releaseWake(); intro(st.bi); }
+  else if (a === 'theme') {
+    var root = document.documentElement;
+    var dark = root.getAttribute('data-theme') === 'dark' || (!root.getAttribute('data-theme') && window.matchMedia('(prefers-color-scheme: dark)').matches);
+    root.setAttribute('data-theme', dark ? 'light' : 'dark');
+  }
+});
+document.addEventListener('visibilitychange', function () { if (!document.hidden && st.view === 'player') { requestWake(); wakeAudio(); } });
+window.addEventListener('pageshow', wakeAudio);
+window.addEventListener('focus', wakeAudio);
+document.addEventListener('pointerdown', wakeAudio, true);
+document.addEventListener('touchend', wakeAudio, true);
+
+home();
+</script>
+</body>
+</html>
